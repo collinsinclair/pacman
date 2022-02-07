@@ -65,21 +65,55 @@ SquareType Board::get_square_value(Position pos) const {
 std::vector<Position> Board::GetMoves(Player *p) const {
   std::vector<Position> moves;
   Position pos = p->get_position();
-  for (int i = -1; i <= 1; ++i) {
-    for (int j = -1; j <= 1; ++j) {
-      Position newPos{pos.row + i, pos.col + j}; // this is the possible new position
-      if (newPos.row >= 0 && newPos.row < rows_ && newPos.col >= 0
-          && newPos.col < cols_) // if the new position is on the board
-      {
-        if ((get_square_value(newPos) != SquareType::Wall)
-            and (get_square_value(newPos)
-                != SquareType::Pacman)) // if the new position is not a wall or the current position
-        {
-          moves.push_back(newPos);
-        }
-      }
+
+  Position up{pos.row - 1, pos.col}; // this is the possible new position
+  if (up.row >= 0 && up.row < rows_ && up.col >= 0
+      && up.col < cols_) // if the new position is on the board
+  {
+    if ((get_square_value(up) != SquareType::Wall)
+        and (get_square_value(up)
+            != SquareType::Pacman)) // if the new position is not a wall or the current position
+    {
+      moves.push_back(up);
     }
   }
+
+  Position down{pos.row + 1, pos.col}; // this is the possible new position
+  if (down.row >= 0 && down.row < rows_ && down.col >= 0
+      && down.col < cols_) // if the new position is on the board
+  {
+    if ((get_square_value(down) != SquareType::Wall)
+        and (get_square_value(down)
+            != SquareType::Pacman)) // if the new position is not a wall or the current position
+    {
+      moves.push_back(down);
+    }
+  }
+
+  Position left{pos.row, pos.col - 1}; // this is the possible new position
+  if (left.row >= 0 && left.row < rows_ && left.col >= 0
+      && left.col < cols_) // if the new position is on the board
+  {
+    if ((get_square_value(left) != SquareType::Wall)
+        and (get_square_value(left)
+            != SquareType::Pacman)) // if the new position is not a wall or the current position
+    {
+      moves.push_back(left);
+    }
+  }
+
+  Position right{pos.row, pos.col + 1}; // this is the possible new position
+  if (right.row >= 0 && right.row < rows_ && right.col >= 0
+      && right.col < cols_) // if the new position is on the board
+  {
+    if ((get_square_value(right) != SquareType::Wall)
+        and (get_square_value(right)
+            != SquareType::Pacman)) // if the new position is not a wall or the current position
+    {
+      moves.push_back(right);
+    }
+  }
+
   return moves;
 }
 

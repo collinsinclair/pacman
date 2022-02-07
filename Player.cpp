@@ -28,3 +28,11 @@ Player::Player(std::string name, bool is_human) {
   has_Treasure_ = 0;
   isDead_ = false;
 }
+std::string Player::ToRelativePosition(Position other) const {
+  Position relPos = Position{pos_.row - other.row, pos_.col - other.col};
+  if (relPos.row == 0 and relPos.col == 1) { return "←"; }
+  if (relPos.row == 0 and relPos.col == -1) { return "→"; }
+  if (relPos.row == 1 and relPos.col == 0) { return "↑"; }
+  if (relPos.row == -1 and relPos.col == 0) { return "↓"; }
+  return "Somehow it's illegal bro";
+}

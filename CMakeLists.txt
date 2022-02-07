@@ -8,4 +8,4 @@ include_directories(.)
 add_executable(hw01
         Game.cpp
         Game.h
-        Player.h Player.cpp)
+        Player.h Player.cpp main.cpp)

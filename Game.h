@@ -4,7 +4,8 @@
 #include <vector>
 #include "Player.h"
 
-const int BOARD_DIMENSIONS = 17;
+const int BOARD_DIMENSION_X = 30;
+const int BOARD_DIMENSION_Y = 30;
 enum class SquareType { Wall, Dots, Pacman, Treasure, Enemies, Empty, PowerfulPacman, Trap, EnemySpecialTreasure };
 
 /**
@@ -22,8 +23,8 @@ class Board {
   Board();
 
   // already implemented in line
-  static int get_rows() { return BOARD_DIMENSIONS; }  // you should be able to change the size of your
-  static int get_cols() { return BOARD_DIMENSIONS; }  // board by changing these numbers and the numbers in the arr_ field
+  static int get_rows() { return BOARD_DIMENSION_Y; }  // you should be able to change the size of your
+  static int get_cols() { return BOARD_DIMENSION_X; }  // board by changing these numbers and the numbers in the arr_ field
 
   /**
    * get the value of a square on the grid at a specified position
@@ -31,6 +32,8 @@ class Board {
    * @return
    */
   SquareType get_square_value(Position pos) const;
+
+  static SquareType numToSquareType(int i);
 
   /**
    * set the value of a square to the given SquareType
@@ -77,9 +80,9 @@ class Board {
   friend std::ostream &operator<<(std::ostream &os, const Board &b);
 
  private:
-  SquareType arr_[BOARD_DIMENSIONS][BOARD_DIMENSIONS]{};
-  int rows_{}; // might be convenient but not necessary
-  int cols_{};
+  SquareType arr_[BOARD_DIMENSION_Y][BOARD_DIMENSION_X];
+  int rows_; // might be convenient but not necessary
+  int cols_;
   // you may add more fields, as needed
 };  // class Board
 

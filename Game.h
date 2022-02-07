@@ -49,7 +49,7 @@ class Board {
    * @param p
    * @return
    */
-  std::vector<Position> GetMoves(Player *p);
+  std::vector<Position> GetMoves(Player *p) const;
 
   /**
    * move a player to a new position on the board
@@ -59,7 +59,7 @@ class Board {
    * @param enemylist
    * @return return true if they moved successfully, false otherwise
    */
-  bool MovePlayer(Player *p, Position pos, std::vector<Player *> enemylist);
+  bool MovePlayer(Player *p, Position pos, const std::vector<Player *>& enemylist);
 
   /**
    * move an enemy to a new position on the board

@@ -2,6 +2,7 @@
 #define _PLAYER_H_
 
 #include<string>
+#include <utility>
 struct Position {
   int row;
   int col;
@@ -14,7 +15,7 @@ struct Position {
 
 class Player {
  public:
-  Player(const std::string name, const bool is_human);  // constructor
+  Player(std::string name, bool is_human);
 
   // These are already implemented for you
   std::string get_name() const { return name_; }  // inline member function
@@ -24,13 +25,13 @@ class Player {
   bool hasTreasure() const { return has_Treasure_; }  // inline member function
   bool isDead() const { return isDead_; }  // inline member function
 
-  void ChangePoints(const int x);
+  void ChangePoints(int x);
 
   // set a new position for this player
   void SetPosition(Position pos);
 
   // checks if the player owns a treasure
-  void setHasTreasure();
+  void setHasTreasure(int x);
 
   //checks if the enemy is dead
   void setIsDead(bool isdead);
@@ -44,13 +45,14 @@ class Player {
   std::string Stringify();
 
   // You may add other functions as needed/wanted
+  bool canEatGhosts() const { return has_Treasure_ > 0; }
 
  private:
   std::string name_;
   int points_;
-  Position pos_;
+  Position pos_{};
   bool is_human_;
-  bool has_Treasure_;
+  int has_Treasure_;
   bool isDead_;
 
   // You may add other fields as needed

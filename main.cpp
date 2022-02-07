@@ -4,33 +4,26 @@
 using namespace std;
 
 int main() {
-  Board board;
-  Player p = Player("Collin", true);
-  board.SetSquareValue(p.get_position(), SquareType::Pacman);
-
-  cout << board << endl;
-  cout << p.Stringify() << endl;
-
-  vector<Position> poss = board.GetMoves(&p);
-  for (auto &pos : poss) {
-//    cout << pos.col << " " << pos.row << endl;
-    cout << p.ToRelativePosition(pos) << " ";
-  }
-  cout << endl;
-  Position newpos = Position{2, 1};
+  Board b;
+  Player p{"Collin", true};
+  b.SetSquareValue(p.get_position(), SquareType::Pacman);
+  vector<Position> possibleMoves;
   vector<Player *> enems;
-  board.MovePlayer(&p, newpos, enems);
-  int x;
-  cin >> x;
-  cout << board;
-  cout << p.Stringify() << endl;
+  char d;
+  while (true) {
 
-  poss = board.GetMoves(&p);
+    cout << b << endl;
+    cout << p.Stringify() << endl;
 
-  for (auto &pos : poss) {
-//    cout << pos.col << " " << pos.row << endl;
-    cout << p.ToRelativePosition(pos) << " ";
+    possibleMoves = b.GetMoves(&p);
+    for (auto &move : possibleMoves) {
+      cout << p.ToRelativePosition(move) << " ";
+    }
+
+    cin >> d;
+    Position dPos = p.CharToPos(d);
+    b.MovePlayer(&p, dPos, enems);
+//    break;
   }
-  cout << endl;
   return 0;
 }

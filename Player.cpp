@@ -36,3 +36,17 @@ std::string Player::ToRelativePosition(Position other) const {
   if (relPos.row == -1 and relPos.col == 0) { return "↓"; }
   return "Somehow it's illegal bro";
 }
+Position Player::CharToPos(char d) const {
+  Position curr = get_position();
+  Position up{curr.row - 1, curr.col};
+  Position down{curr.row + 1, curr.col};
+  Position left{curr.row, curr.col - 1};
+  Position right{curr.row, curr.col + 1};
+  switch (d) {
+    case 'w':return up;
+    case 's':return down;
+    case 'a':return left;
+    case 'd':return right;
+    default:return curr;
+  }
+}

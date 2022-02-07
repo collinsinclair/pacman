@@ -47,6 +47,8 @@ class Player {
   // You may add other functions as needed/wanted
   bool canEatGhosts() const { return has_Treasure_ > 0; }
 
+  Position CharToPos(char d) const;
+
  private:
   std::string name_;
   int points_;

@@ -61,7 +61,7 @@ std::ostream &operator<<(ostream &os, const Board &b) {
 std::string SquareTypeStringify(SquareType sq) {
   switch (sq) {
     case SquareType::Wall:return "█";
-    case SquareType::Empty:return "█";
+    case SquareType::Empty:return " ";
     case SquareType::Dots:return ".";
     case SquareType::PowerfulPacman:return "$";
     default: return " ";

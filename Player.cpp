@@ -7,7 +7,7 @@ void Player::SetPosition(Position pos) {
   pos_ = pos;
 }
 void Player::setHasTreasure(const int x) {
-  has_Treasure_ += x;
+  treasure_ += x;
 }
 void Player::setIsDead(bool isDead) {
   isDead_ = isDead;
@@ -23,7 +23,7 @@ Player::Player(std::string name, bool is_human) {
   pos_.col = 1;
   pos_.row = 1;
   points_ = 0;
-  has_Treasure_ = 0;
+  treasure_ = 0;
   isDead_ = false;
 }
 std::string Player::ToRelativePosition(Position other) const {

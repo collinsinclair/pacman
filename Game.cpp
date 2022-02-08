@@ -16,7 +16,8 @@ void readLines(const string &fileName, vector<string> &lines) {
   }
   file.close();
 }
-Board::Board() {
+Board::Board(Player *p) {
+  p_ = p;
   rows_ = BOARD_DIMENSION_X;
   cols_ = BOARD_DIMENSION_Y;
   // Read the map text file into a vector of lines
@@ -49,7 +50,7 @@ void Board::SetSquareValue(Position pos, SquareType value) {
 std::ostream &operator<<(ostream &os, const Board &b) {
   for (int i = 0; i < b.rows_; ++i) {
     for (int j = 0; j < b.cols_; ++j) {
-      cout << SquareTypeStringify(b.arr_[i][j]);
+      cout << SquareTypeStringify(b.arr_[i][j], b.p_);
     }
     cout << endl;
   }
@@ -64,8 +65,7 @@ std::vector<Position> Board::GetMoves(Player *p) const {
   Position up{pos.row - 1, pos.col}; // this is the possible new position
   if (up.row >= 0 && up.row < rows_ && up.col >= 0 && up.col < cols_) // if the new position is on the board
   {
-    if ((get_square_value(up) != SquareType::Wall)
-        and (get_square_value(up) != SquareType::Pacman)) // if the new position is not a wall or the current position
+    if ((get_square_value(up) != SquareType::Wall)) // if the new position is not a wall or the current position
     {
       moves.push_back(up);
     }
@@ -73,8 +73,7 @@ std::vector<Position> Board::GetMoves(Player *p) const {
   Position down{pos.row + 1, pos.col}; // this is the possible new position
   if (down.row >= 0 && down.row < rows_ && down.col >= 0 && down.col < cols_) // if the new position is on the board
   {
-    if ((get_square_value(down) != SquareType::Wall)
-        and (get_square_value(down) != SquareType::Pacman)) // if the new position is not a wall or the current position
+    if ((get_square_value(down) != SquareType::Wall)) // if the new position is not a wall or the current position
     {
       moves.push_back(down);
     }
@@ -82,8 +81,7 @@ std::vector<Position> Board::GetMoves(Player *p) const {
   Position left{pos.row, pos.col - 1}; // this is the possible new position
   if (left.row >= 0 && left.row < rows_ && left.col >= 0 && left.col < cols_) // if the new position is on the board
   {
-    if ((get_square_value(left) != SquareType::Wall)
-        and (get_square_value(left) != SquareType::Pacman)) // if the new position is not a wall or the current position
+    if ((get_square_value(left) != SquareType::Wall)) // if the new position is not a wall or the current position
     {
       moves.push_back(left);
     }
@@ -91,8 +89,7 @@ std::vector<Position> Board::GetMoves(Player *p) const {
   Position right{pos.row, pos.col + 1}; // this is the possible new position
   if (right.row >= 0 && right.row < rows_ && right.col >= 0 && right.col < cols_) // if the new position is on the board
   {
-    if ((get_square_value(right) != SquareType::Wall) and (get_square_value(right)
-        != SquareType::Pacman)) // if the new position is not a wall or the current position
+    if ((get_square_value(right) != SquareType::Wall)) // if the new position is not a wall or the current position
     {
       moves.push_back(right);
     }
@@ -105,20 +102,28 @@ bool Board::MovePlayer(Player *p, Position new_pos, const std::vector<Player *> 
   {
     if (move == new_pos) { // if the move is the same as the new position
       for (auto &enemy : enemyList) { // for each enemy
-        if (enemy->get_position() == new_pos) { // if the enemy is at the new position
-          if (p->canEatGhosts()) { // if the player can eat ghosts
-            enemy->setIsDead(true);
-            p->setHasTreasure(-1);
-          } else {
-            p->setIsDead(true);
-            return true;
+        if (not enemy->isDead()) {
+          if (enemy->get_position() == new_pos) { // if the enemy is at the new position
+            if (p->canEatGhosts()) { // if the player can eat ghosts
+              enemy->setIsDead(true);
+              if (get_square_value(enemy->get_position()) == SquareType::EnemyPoint) {
+                SetSquareValue(enemy->get_position(), SquareType::Dots); // set the old position to dots
+              } else if (get_square_value(enemy->get_position()) == SquareType::EnemyNoPoint) {
+                SetSquareValue(enemy->get_position(), SquareType::Empty); // set the old position to empty
+              }
+              p->setHasTreasure(-1);
+            } else {
+              p->setIsDead(true);
+              return true;
+            }
           }
         }
       }
-      if (get_square_value(new_pos) == SquareType::Dots) { // if the old position was a dot
+      if (get_square_value(new_pos) == SquareType::Dots) { // if the new position is a dot
         p->ChangePoints(1); // add a point
       } else if (get_square_value(new_pos) == SquareType::Treasure) {
         p->setHasTreasure(1);
+        p->ChangePoints(100);
       }
       SetSquareValue(p->get_position(), SquareType::Empty); // set the old position to empty
       SetSquareValue(new_pos, SquareType::Pacman); // set the new position to Pacman
@@ -152,23 +157,31 @@ bool Board::MoveEnemy(Player *enemy, Player *pacman) {
     enemy->SetPosition(new_pos);
     return true;
   } else if (get_square_value(new_pos) == SquareType::Pacman) {
-    pacman->setIsDead(true);
-    SetSquareValue(new_pos, SquareType::EnemyNoPoint);
-    enemy->SetPosition(new_pos);
-    return true;
-  } else if (get_square_value(new_pos) == SquareType::PowerfulPacman) {
-    enemy->setIsDead(true);
-    pacman->setHasTreasure(-1);
-    return true;
+    if (pacman->canEatGhosts()) {
+      enemy->setIsDead(true);
+      if (get_square_value(enemy->get_position()) == SquareType::EnemyPoint) {
+        SetSquareValue(enemy->get_position(), SquareType::Dots); // set the old position to dots
+      } else if (get_square_value(enemy->get_position()) == SquareType::EnemyNoPoint) {
+        SetSquareValue(enemy->get_position(), SquareType::Empty); // set the old position to empty
+      }
+      pacman->setHasTreasure(-1);
+    } else {
+      pacman->setIsDead(true);
+      SetSquareValue(new_pos, SquareType::EnemyNoPoint);
+      enemy->SetPosition(new_pos);
+      return true;
+    }
   }
   return false;
 }
-std::string SquareTypeStringify(SquareType sq) {
+std::string SquareTypeStringify(SquareType sq, Player *p) {
   switch (sq) {
     case SquareType::Wall:return "█";
     case SquareType::Empty:return " ";
     case SquareType::Dots:return ".";
-    case SquareType::Pacman:return "<";
+    case SquareType::Pacman:
+      if (p->canEatGhosts()) return "≤";
+      else return "<";
     case SquareType::PowerfulPacman:return "≤";
     case SquareType::Treasure:return "$";
     case SquareType::EnemyNoPoint:return "@";
@@ -200,4 +213,7 @@ void Game::TakeTurn(Player *p, const std::vector<Player *> &enemyList) {
 }
 void Game::TakeTurnEnemy(Player *enemy, Player *pacman) {
   board_->MoveEnemy(enemy, pacman);
+}
+bool Game::CheckifdotsOver(Player *p) const {
+  return (dots_count_ - p->get_points()) <= 0;
 }

@@ -21,13 +21,13 @@ enum class SquareType {
  * @param sq
  * @return
  */
-std::string SquareTypeStringify(SquareType sq);
+std::string SquareTypeStringify(SquareType sq, Player *p);
 class Board {
  public:
   /**
    * default constructor for the board
    */
-  Board();
+  Board(Player *p);
   static int get_rows() { return BOARD_DIMENSION_Y; }
   static int get_cols() { return BOARD_DIMENSION_X; }
   /**
@@ -79,6 +79,7 @@ class Board {
   SquareType arr_[BOARD_DIMENSION_Y][BOARD_DIMENSION_X];
   int rows_;
   int cols_;
+  Player *p_;
 };
 class Game {
  public:
@@ -100,7 +101,7 @@ class Game {
    * @param p
    * @param enemyList
    */
-  void TakeTurn(Player *p, const std::vector<Player *>& enemyList);
+  void TakeTurn(Player *p, const std::vector<Player *> &enemyList);
   /**
    * have an enemy take its turn
    * @calls MoveEnemy
@@ -113,13 +114,14 @@ class Game {
    * @param p
    * @return true if game over, false otherwise
    */
-  bool IsGameOver(Player *p) { return GameOver; };
+  bool IsGameOver(Player *p) const { return CheckifdotsOver(p) or p->isDead(); };
   /**
    * @calls get_square_value
    * specifies whether the player has collected all of the dots
    * @return true if all pellets have been collected
    */
-  bool CheckifdotsOver();
+  bool CheckifdotsOver(Player *p) const;
+  void SetGameOver() { GameOver = true; }
   /**
    * @calls GetMoves
    * compiles game stats to display for player after a game ends

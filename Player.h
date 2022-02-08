@@ -13,8 +13,8 @@ class Player {
   Player(std::string name, bool is_human);
   Position CharToPos(char d) const;
   Position get_position() const { return pos_; }
-  bool canEatGhosts() const { return has_Treasure_ > 0; }
-  bool hasTreasure() const { return has_Treasure_; }
+  bool canEatGhosts() const { return treasure_ > 0; }
+  int numTreasure() const { return treasure_; }
   bool isDead() const { return isDead_; }
   bool is_human() const { return is_human_; }
   int get_points() const { return points_; }
@@ -30,7 +30,7 @@ class Player {
   Position pos_{};
   bool isDead_;
   bool is_human_;
-  int has_Treasure_;
+  int treasure_;
   int points_;
 };
 #endif  // _PLAYER_H_

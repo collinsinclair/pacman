@@ -1,3 +1,8 @@
+/**
+Collin Sinclair
+Homework 1: Pacman
+*/
+
 #ifndef _GAME_H_
 #define _GAME_H_
 #include <vector>
@@ -33,7 +38,12 @@ class Board {
    * @return
    */
   SquareType get_square_value(Position pos) const;
-  static SquareType numToSquareType(int i);
+  /**
+   * converts a map number to square type
+   * @param i map number
+   * @return SquareType
+   */
+  static SquareType NumToSquareType(int i);
   /**
    * set the value of a square to the given SquareType
    * @param pos
@@ -84,14 +94,6 @@ class Game {
    * default constructor for Game
    */
   explicit Game(Board *b);
-//  /**
-//   * initialize a new game with one human player and a number of enemies to generate
-//   * @calls SetSquareValue
-//   * @param human
-//   * @param enemyList
-//   * @param enemies
-//   */
-//  void NewGame(Player *human, std::vector<Player *> enemyList, const int enemies);
   /**
    * have the given Player take their turn
    * @calls MovePlayer
@@ -111,14 +113,14 @@ class Game {
    * @param p
    * @return true if game over, false otherwise
    */
-  bool IsGameOver(Player *p) const { return CheckIfDotsOver() or p->isDead(); };
+  bool IsGameOver(Player *p) const { return CheckIfDotsOver() or p->IsDead(); };
   /**
    * @calls get_square_value
    * specifies whether the player has collected all of the dots
    * @return true if all pellets have been collected
    */
   bool CheckIfDotsOver() const {return dots_remaining_ == 0;}
-  int countDots();
+  int CountDots();
   /**
    * @calls GetMoves
    * compiles game stats to display for player after a game ends

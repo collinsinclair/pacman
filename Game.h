@@ -12,9 +12,6 @@ enum class SquareType {
   EnemyNoPoint,
   EnemyPoint,
   Empty,
-  PowerfulPacman,
-  Trap,
-  EnemySpecialTreasure
 };
 /**
  * turn a square type into a string that can be printed to the console (mainly unicode emojis!)
@@ -27,7 +24,7 @@ class Board {
   /**
    * default constructor for the board
    */
-  Board(Player *p);
+  explicit Board(Player *p);
   static int get_rows() { return BOARD_DIMENSION_Y; }
   static int get_cols() { return BOARD_DIMENSION_X; }
   /**
@@ -86,7 +83,7 @@ class Game {
   /**
    * default constructor for Game
    */
-  Game(Board *b);
+  explicit Game(Board *b);
 //  /**
 //   * initialize a new game with one human player and a number of enemies to generate
 //   * @calls SetSquareValue
@@ -114,32 +111,24 @@ class Game {
    * @param p
    * @return true if game over, false otherwise
    */
-  bool IsGameOver(Player *p) const { return CheckifdotsOver(p) or p->isDead(); };
+  bool IsGameOver(Player *p) const { return CheckIfDotsOver() or p->isDead(); };
   /**
    * @calls get_square_value
    * specifies whether the player has collected all of the dots
    * @return true if all pellets have been collected
    */
-  bool CheckifdotsOver(Player *p) const;
-  void SetGameOver() { GameOver = true; }
+  bool CheckIfDotsOver() const {return dots_remaining_ == 0;}
+  int countDots();
   /**
    * @calls GetMoves
    * compiles game stats to display for player after a game ends
    * @param p
    * @return
    */
-  std::string GenerateReport(Player *p);
-  /**
-   * facilitates printing to the console to start and end games, as well as in between games (menu system)
-   * @param os
-   * @param m
-   * @return
-   */
-  friend std::ostream &operator<<(std::ostream &os, const Game &m);
+  std::string GenerateReport(Player *p) const;
  private:
   Board *board_;
   int turn_count_;
-  int dots_count_;
-  bool GameOver;
+  int dots_remaining_;
 };
 #endif

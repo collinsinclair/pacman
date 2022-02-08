@@ -10,13 +10,12 @@ struct Position {
 };
 class Player {
  public:
-  Player(std::string name, bool is_human);
+  Player(std::string name);
   Position CharToPos(char d) const;
   Position get_position() const { return pos_; }
   bool canEatGhosts() const { return treasure_ > 0; }
   int numTreasure() const { return treasure_; }
   bool isDead() const { return isDead_; }
-  bool is_human() const { return is_human_; }
   int get_points() const { return points_; }
   std::string Stringify();
   std::string ToRelativePosition(Position other) const;
@@ -29,7 +28,6 @@ class Player {
   std::string name_;
   Position pos_{};
   bool isDead_;
-  bool is_human_;
   int treasure_;
   int points_;
 };

@@ -16,6 +16,28 @@ void readLines(const string &fileName, vector<string> &lines) {
   }
   file.close();
 }
+
+void createTreasure(const string &fileName, const string &newFileName) {
+  vector<string> lines;
+  readLines(fileName, lines);
+  // for each line, for each character, if the character is a "2", replace it with a "3" 10% of the time
+  for (auto & line : lines) {
+    for (char & j : line) {
+      if (j == '2') {
+        uniform_int_distribution<int> dist(0, 9);
+        if (dist(defEngine) < 1) {
+          j = '3';
+        }
+      }
+    }
+  }
+  ofstream file(newFileName);
+  for (auto & line : lines) {
+    file << line << endl;
+  }
+  file.close();
+}
+
 Board::Board(Player *p) {
   p_ = p;
   rows_ = BOARD_DIMENSION_X;
@@ -23,7 +45,9 @@ Board::Board(Player *p) {
   // Read the map text file into a vector of lines
   vector<string> lines;
   string pathToMap = "map.txt";
-  readLines(pathToMap, lines);
+  string pathToNewMap = "new_map.txt";
+  createTreasure(pathToMap, pathToNewMap);
+  readLines(pathToNewMap, lines);
   Position pos{0, 0};
   for (int i = 0; i < rows_; ++i) {
     for (int j = 0; j < cols_; ++j) {
@@ -87,7 +111,8 @@ std::vector<Position> Board::GetMoves(Player *p) const {
     }
   }
   Position right{pos.row, pos.col + 1}; // this is the possible new position
-  if (right.row >= 0 && right.row < rows_ && right.col >= 0 && right.col < cols_) // if the new position is on the board
+  if (right.row >= 0 && right.row < rows_ && right.col >= 0
+      && right.col < cols_) // if the new position is on the board
   {
     if ((get_square_value(right) != SquareType::Wall)) // if the new position is not a wall or the current position
     {
@@ -182,7 +207,6 @@ std::string SquareTypeStringify(SquareType sq, Player *p) {
     case SquareType::Pacman:
       if (p->canEatGhosts()) return "≤";
       else return "<";
-    case SquareType::PowerfulPacman:return "≤";
     case SquareType::Treasure:return "$";
     case SquareType::EnemyNoPoint:return "@";
     case SquareType::EnemyPoint:return "@";
@@ -192,8 +216,7 @@ std::string SquareTypeStringify(SquareType sq, Player *p) {
 Game::Game(Board *b) {
   board_ = b;
   turn_count_ = 0;
-  dots_count_ = 239;
-  GameOver = false;
+  dots_remaining_ = 739;
 }
 void Game::TakeTurn(Player *p, const std::vector<Player *> &enemyList) {
   vector<Position> possibleMoves;
@@ -214,6 +237,24 @@ void Game::TakeTurn(Player *p, const std::vector<Player *> &enemyList) {
 void Game::TakeTurnEnemy(Player *enemy, Player *pacman) {
   board_->MoveEnemy(enemy, pacman);
 }
-bool Game::CheckifdotsOver(Player *p) const {
-  return (dots_count_ - p->get_points()) <= 0;
+std::string Game::GenerateReport(Player *p) const {
+  std::string report;
+  report += "GAME REPORT FOR " + p->get_name() + "\n";
+  report += "FINAL SCORE: " + std::to_string(p->get_points()) + "\n";
+  report += "NUMBER OF TURNS: " + std::to_string(turn_count_) + " (" + to_string(p->get_points() / turn_count_)
+      + " POINTS / TURN)";
+  return report;
+}
+int Game::countDots() {
+// counts all the Squares that are dots
+  int dots = 0;
+  for (int i = 0; i < Board::get_cols(); i++) {
+    for (int j = 0; j < Board::get_rows(); j++) {
+      if (board_->get_square_value({i, j}) == SquareType::Dots) {
+        dots++;
+      }
+    }
+  }
+  dots_remaining_ = dots;
+  return dots;
 }

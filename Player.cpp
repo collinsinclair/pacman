@@ -17,9 +17,8 @@ std::string Player::Stringify() {
   std::string playerString = name_ + ": " + pointString;
   return playerString;
 }
-Player::Player(std::string name, bool is_human) {
+Player::Player(std::string name) {
   name_ = std::move(name);
-  is_human_ = is_human;
   pos_.col = 1;
   pos_.row = 1;
   points_ = 0;

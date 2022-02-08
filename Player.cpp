@@ -1,7 +1,5 @@
 #include "Player.h"
-
 #include <utility>
-
 void Player::ChangePoints(const int x) {
   points_ += x;
 }
@@ -11,8 +9,8 @@ void Player::SetPosition(Position pos) {
 void Player::setHasTreasure(const int x) {
   has_Treasure_ += x;
 }
-void Player::setIsDead(bool isdead) {
-  isDead_ = isdead;
+void Player::setIsDead(bool isDead) {
+  isDead_ = isDead;
 }
 std::string Player::Stringify() {
   std::string pointString = std::to_string(points_);
